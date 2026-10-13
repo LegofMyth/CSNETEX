@@ -26,6 +26,41 @@ implementation {
         NEIGHBOR_TIMEOUT = 5 
     };
 
+    // Project 2:
+    // Copy active neighbor IDs into a caller-provided buffer.
+    command uint8_t NDiscovery.getNeighbors(
+        uint16_t* buffer,
+        uint8_t capacity
+    ) {
+        uint32_t* keys;
+        uint16_t tableSize;
+        uint16_t i;
+
+        if (buffer == NULL || capacity == 0) {
+            return 0;
+        }
+
+        keys = call NeighborTable.getKeys();
+        tableSize = call NeighborTable.size();
+
+        // Never write beyond the caller's buffer.
+        if (tableSize > capacity) {
+            tableSize = capacity;
+        }
+
+        for (i = 0; i < tableSize; i++) {
+            buffer[i] = (uint16_t)keys[i];
+        }
+
+        return (uint8_t)tableSize;
+    }
+
+    // Project 2:
+    // Check whether a node is currently a neighbor.
+    command bool NDiscovery.isNeighbor(uint16_t nodeID) {
+        return call NeighborTable.contains(nodeID);
+    }
+
     command void NDiscovery.start() {
 
         call neighborTimer.startPeriodic(500 +(uint16_t) (call Random.rand16() % 997));
