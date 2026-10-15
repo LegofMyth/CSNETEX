@@ -131,36 +131,75 @@ class TestSim:
 
 def main():
 
+    # s = TestSim()
+
+    # # Small controlled topology:
+    # #
+    # # 1 <-> 2 <-> 3      4
+    # #
+    # # s.loadTopo("long_line.topo")
+    # s.loadTopo("project1.topo")
+
+    # # Node 4 is intentionally isolated, so loadTopo()
+    # # will not automatically place it in moteids.
+    # # if 4 not in s.moteids:
+    # #     s.moteids.append(4)
+
+    # s.loadNoise("no_noise.txt")
+    # s.bootAll()
+
+    # # Project 1 debug channels.
+    # # s.addChannel(s.NEIGHBOR_CHANNEL)
+    # # s.addChannel(s.FLOODING_CHANNEL)
+    # s.addChannel(s.ROUTING_CHANNEL)
+
+    # s.runTime(1);
+    # s.ping(2,15,"Hi");
+    # s.runTime(20);
+    # s.neighborDMP(5);
+    # s.runTime(1);
+    # s.moteOff(4);
+    # s.runTime(20);
+    # s.neighborDMP(3);
+    # s.runTime(1);
+
+    
     s = TestSim()
 
-    # Small controlled topology:
-    #
-    # 1 <-> 2 <-> 3      4
-    #
-    s.loadTopo("long_line.topo")
-
-    # Node 4 is intentionally isolated, so loadTopo()
-    # will not automatically place it in moteids.
-    # if 4 not in s.moteids:
-    #     s.moteids.append(4)
-
+    # Load the Project 1 test topology.
+    s.loadTopo("project1.topo")
     s.loadNoise("no_noise.txt")
     s.bootAll()
 
-    # Project 1 debug channels.
-    s.addChannel(s.NEIGHBOR_CHANNEL)
-    s.addChannel(s.FLOODING_CHANNEL)
+    # Show routing information.
+    s.addChannel(s.ROUTING_CHANNEL)
+
+    # Allow neighbor discovery and routing tables to initialize.
+    s.runTime(20)
+
+    # Test 1: Print Node 2's routing table.
+    s.routeDMP(2)
+    s.runTime(1)
+
+    # Test 2: Print Node 3's routing table.
+    s.routeDMP(3)
+    s.runTime(1)
+
+    # Test 3: Print Node 1's routing table.
+    s.routeDMP(1)
+    s.runTime(1)
+
+    # Test 4: Turn off Node 3.
+    s.moteOff(3)
+
+    # Allow Node 2 to detect the missing neighbor.
+    s.runTime(20)
+
+    # Test 5: Print Node 2's updated routing table.
+    s.routeDMP(2)
+    s.runTime(1)
 
 
-    s.runTime(1);
-    s.ping(2,15,"Hi");
-    s.runTime(20);
-    s.neighborDMP(5);
-    s.runTime(1);
-    s.moteOff(4);
-    s.runTime(20);
-    s.neighborDMP(3);
-    s.runTime(1);
 
 
     

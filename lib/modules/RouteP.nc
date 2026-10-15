@@ -16,7 +16,7 @@ module RouteP {
 implementation {
 
     enum {
-        INFINITY = 16,
+        ROUTE_INFINITY = 16,
         MAX_ROUTES = 32,
         MAX_NEIGHBORS = 20,
         ROUTE_CHECK_INTERVAL = 1000,
@@ -82,7 +82,7 @@ implementation {
         uint8_t neighborCount;
         uint8_t i;
 
-        int16_t index;
+        int16_t routeIndex;
         uint16_t neighborID;
         uint32_t now;
 
@@ -105,7 +105,7 @@ implementation {
                 )) {
 
                 routingTable[i].valid = FALSE;
-                routingTable[i].cost = INFINITY;
+                routingTable[i].cost = ROUTE_INFINITY;
                 routingTable[i].nextHop = NO_NEXT_HOP;
                 routingTable[i].lastUpdatedMs = now;
 
@@ -125,14 +125,14 @@ implementation {
                 continue;
             }
 
-            index = findRoute(neighborID);
+            routeIndex = findRoute(neighborID);
 
-            if (index >= 0) {
+            if (routeIndex >= 0) {
 
                 // Existing neighbor or recovered direct link.
-                if (!routingTable[index].valid ||
-                    !routingTable[index].direct ||
-                    routingTable[index].cost != 1) {
+                if (!routingTable[routeIndex].valid ||
+                    !routingTable[routeIndex].direct ||
+                    routingTable[routeIndex].cost != 1) {
 
                     dbg(ROUTING_CHANNEL,
                         "Node %d restored direct route to %d\n",
@@ -140,11 +140,11 @@ implementation {
                         neighborID);
                 }
 
-                routingTable[index].nextHop = neighborID;
-                routingTable[index].cost = 1;
-                routingTable[index].valid = TRUE;
-                routingTable[index].direct = TRUE;
-                routingTable[index].lastUpdatedMs = now;
+                routingTable[routeIndex].nextHop = neighborID;
+                routingTable[routeIndex].cost = 1;
+                routingTable[routeIndex].valid = TRUE;
+                routingTable[routeIndex].direct = TRUE;
+                routingTable[routeIndex].lastUpdatedMs = now;
 
             } else {
 
@@ -219,28 +219,28 @@ implementation {
         uint16_t* nextHop,
         uint8_t* cost
     ) {
-        int16_t index;
+        int16_t routeIndex;
 
         if (nextHop == NULL || cost == NULL) {
             return FALSE;
         }
 
         *nextHop = NO_NEXT_HOP;
-        *cost = INFINITY;
+        *cost = ROUTE_INFINITY;
 
-        index = findRoute(destination);
+        routeIndex = findRoute(destination);
 
-        if (index < 0) {
+        if (routeIndex < 0) {
             return FALSE;
         }
 
-        if (!routingTable[index].valid ||
-            routingTable[index].cost >= INFINITY) {
+        if (!routingTable[routeIndex].valid ||
+            routingTable[routeIndex].cost >= ROUTE_INFINITY) {
             return FALSE;
         }
 
-        *nextHop = routingTable[index].nextHop;
-        *cost = routingTable[index].cost;
+        *nextHop = routingTable[routeIndex].nextHop;
+        *cost = routingTable[routeIndex].cost;
 
         return TRUE;
     }

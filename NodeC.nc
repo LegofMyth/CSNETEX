@@ -36,4 +36,13 @@ implementation {
 
     components FloodingC;
     Node.Flooding -> FloodingC;
+
+    // Project 2: Local Routing State
+    components RouteC;
+    
+    // Give Node access to the Route interface.
+    Node.Route -> RouteC.Route;
+    
+    // Give RouteP access to the SAME Neighbor Discovery module.
+    RouteC.NDiscovery -> NDiscoveryC.NDiscovery;
 }

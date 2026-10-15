@@ -26,6 +26,9 @@ module Node{
    uses interface NDiscovery;
 
    uses interface Flooding;
+
+   // Project 2: Access the local routing table.
+   uses interface Route;
 }
 
 implementation{
@@ -46,6 +49,8 @@ implementation{
       if(err == SUCCESS){
          // dbg(GENERAL_CHANNEL, "Radio On\n"); // dbg = debug
          call NDiscovery.start(); // add this qaz
+         // Project 2: Initialize the routing table.
+         call Route.start();
       }else{
          //Retry until successful
          call AMControl.start();
@@ -86,7 +91,9 @@ implementation{
       call NDiscovery.printNeighbors();
    }
 
-   event void CommandHandler.printRouteTable(){}
+   event void CommandHandler.printRouteTable(){
+      call Route.printRoutingTable(); // project 2: print routing table
+   }
 
    event void CommandHandler.printLinkState(){}
 

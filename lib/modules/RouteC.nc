@@ -20,7 +20,8 @@ implementation {
     Route = RouteP.Route;
 
     // Give RouteP access to Neighbor Discovery.
-    RouteP.NDiscovery -> NDiscovery;
+    // Pass the external Neighbor Discovery interface to RouteP.
+    NDiscovery = RouteP.NDiscovery;
 
     // Connect RouteP to its periodic timer.
     RouteP.RouteTimer -> RouteTimer;
